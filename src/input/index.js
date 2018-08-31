@@ -5,17 +5,17 @@ import Tag from '../tag'
 import styles from './index.css'
 import { getDataset, debounce } from '../utils'
 
-const cx = cn.bind(styles)
+const cx = cn.bind(styles);
 
-const getTags = (tags = [], onDelete) =>
+const getTags = (tags = [], onDelete, tagRemoveClassName) =>
   tags.map(tag => {
-    const { _id, label, tagClassName, dataset } = tag
+    const { _id, label, tagClassName, dataset } = tag;
     return (
       <li className={cx('tag-item', tagClassName)} key={`tag-item-${_id}`} {...getDataset(dataset)}>
-        <Tag label={label} id={_id} onDelete={onDelete} />
+        <Tag label={label} id={_id} onDelete={onDelete} tagRemoveClassName={tagRemoveClassName} />
       </li>
     )
-  })
+  });
 
 class Input extends PureComponent {
   static propTypes = {
@@ -25,25 +25,26 @@ class Input extends PureComponent {
     onFocus: PropTypes.func,
     onBlur: PropTypes.func,
     onTagRemove: PropTypes.func,
-    inputRef: PropTypes.func
-  }
+    inputRef: PropTypes.func,
+    tagRemoveClassName: PropTypes.string
+  };
 
   constructor(props) {
-    super(props)
+    super(props);
     this.delayedCallback = debounce(e => this.props.onInputChange(e.target.value), 300)
   }
 
   handleInputChange = e => {
-    e.persist()
+    e.persist();
     this.delayedCallback(e)
-  }
+  };
 
   render() {
-    const { tags, onTagRemove, inputRef, placeholderText = 'Choose...', onFocus, onBlur } = this.props
+    const { tags, onTagRemove, tagRemoveClassName, inputRef, placeholderText = 'Choose...', onFocus, onBlur } = this.props;
 
     return (
       <ul className={cx('tag-list')}>
-        {getTags(tags, onTagRemove)}
+        {getTags(tags, onTagRemove, tagRemoveClassName)}
         <li className={cx('tag-item')}>
           <input
             type="text"
